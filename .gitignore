@@ -1,0 +1,21 @@
+# Зависимости
+node_modules/
+server/node_modules/
+
+# Сборка
+dist/
+build/
+
+# База данных и логи
+*.db
+*.db-journal
+logs/
+*.log
+
+# Переменные окружения и секреты
+.env
+.env.local
+
+# Системные файлы
+.DS_Store
+Thumbs.db
