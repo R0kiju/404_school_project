@@ -1,7 +1,17 @@
 import React from 'react';
 import { PageId } from '../App';
 import { useAppContext } from '../context/AppContext';
-import { User as UserIcon, LogOut } from 'lucide-react';
+import { 
+  User as UserIcon, 
+  LogOut, 
+  LayoutDashboard, 
+  BookOpen, 
+  Library as LibraryIcon, 
+  ClipboardCheck, 
+  Info, 
+  Mail,
+  ChevronRight
+} from 'lucide-react';
 
 interface HeaderProps {
   activePage: PageId;
@@ -11,52 +21,78 @@ interface HeaderProps {
 const Header: React.FC<HeaderProps> = ({ activePage, onNavigate }) => {
   const { user, logout } = useAppContext();
 
-  const navItems: { id: PageId; label: string }[] = [
-    { id: 'home', label: 'Главная' },
-    { id: 'courses', label: 'Курсы' },
-    { id: 'library', label: 'Библиотека' },
-    { id: 'tests', label: 'Тестирование' },
-    { id: 'about', label: 'О платформе' },
-    { id: 'contacts', label: 'Контакты' },
+  const navItems = [
+    { id: 'home' as PageId, label: 'Главная', icon: LayoutDashboard },
+    { id: 'courses' as PageId, label: 'Курсы', icon: BookOpen },
+    { id: 'library' as PageId, label: 'Библиотека', icon: LibraryIcon },
+    { id: 'tests' as PageId, label: 'Тесты', icon: ClipboardCheck },
+  ];
+
+  const secondaryNav = [
+    { id: 'about' as PageId, label: 'О нас', icon: Info },
+    { id: 'contacts' as PageId, label: 'Контакты', icon: Mail },
   ];
 
   return (
-    <header>
+    <header className="main-header">
       <div className="container header-inner">
-        <div className="logo" onClick={() => onNavigate('home')}>404 School</div>
-        <nav>
-          {navItems.map(item => (
-            <button
-              key={item.id}
-              className={activePage === item.id ? 'active-nav' : ''}
-              onClick={() => onNavigate(item.id)}
-            >
-              {item.label}
-            </button>
-          ))}
-          {user && (
-            <button
-              className={activePage === 'cabinet' ? 'active-nav' : ''}
-              onClick={() => onNavigate('cabinet')}
-            >
-              Личный кабинет
-            </button>
-          )}
-        </nav>
-        <div className="header-actions">
-          {user ? (
-            <>
-              <span className="badge">
-                <UserIcon size={14} style={{ marginRight: 4, verticalAlign: 'middle' }} />
-                {user.name}
+        <div className="header-left">
+          <div className="logo-wrapper" onClick={() => onNavigate('home')}>
+            <div className="logo-icon">404</div>
+            <span className="logo-text">School</span>
+          </div>
+          
+          <div className="nav-divider" />
+          
+          <nav className="primary-nav">
+            {navItems.map(item => (
+              <div 
+                key={item.id}
+                className={`nav-link ${activePage === item.id ? 'active' : ''}`}
+                onClick={() => onNavigate(item.id)}
+              >
+                <item.icon size={18} />
+                <span>{item.label}</span>
+                {activePage === item.id && <div className="active-indicator" />}
+              </div>
+            ))}
+          </nav>
+        </div>
+
+        <div className="header-right">
+          <nav className="secondary-nav">
+            {secondaryNav.map(item => (
+              <span 
+                key={item.id}
+                className={`nav-link-sm ${activePage === item.id ? 'active' : ''}`}
+                onClick={() => onNavigate(item.id)}
+              >
+                {item.label}
               </span>
-              <button onClick={logout} title="Выйти">
-                <LogOut size={16} />
+            ))}
+          </nav>
+
+          <div className="auth-zone">
+            {user ? (
+              <div className="user-profile-trigger">
+                <div className="avatar-mini" onClick={() => onNavigate('cabinet')}>
+                  {user.name[0]}
+                </div>
+                <div className="user-info-drop" onClick={() => onNavigate('cabinet')}>
+                  <span className="user-name">{user.name}</span>
+                  <span className="user-role">{user.role}</span>
+                </div>
+                <button className="logout-btn" onClick={logout}>
+                  <LogOut size={16} />
+                </button>
+              </div>
+            ) : (
+              <button className="btn-login-premium" onClick={() => onNavigate('auth')}>
+                Начать обучение
+                <ChevronRight size={16} />
               </button>
-            </>
-          ) : (
-            <button className="btn-primary" onClick={() => onNavigate('auth')}>Войти</button>
-          )}
+            )}
+          </div>
         </div>
       </div>
     </header>
